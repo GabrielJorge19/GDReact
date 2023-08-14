@@ -1,0 +1,19 @@
+To-do
+
+Telas de informações.
+Arrumar botões de informação. Não da pra abrir o mesmo depois de fechado.
+Tela inicial falta um componente que mostre apenas uma decoração (Varias fotos e valores).
+Tela para exibir as categorias.
+Tela pra exibir as decorações.
+Criar outro tipo de HorizontalList com tituto e valor fora da imagem.
+
+
+
+
+
+Tela de decoração.
+- Titulo.
+- Foto (numero de fotos).
+- Valor.
+- Informações.
+- Descrição.
