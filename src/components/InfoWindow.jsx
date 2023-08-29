@@ -2,44 +2,46 @@ import {useRef, useEffect} from 'react';
 
 function InfoWindow(props){
     const window = useRef(null);
-    let initRender = 0;
 
     let styles = {
         container: {
             display: 'none',
             width: "100vw",
-            height: "calc(100vh - 28vw)",
-            position: 'absolute',
-            top: "15vw",
+            height: "100vh",
+            top: "0px",
             left: 0,
             backgroundColor: 'white',
             transition: 'all .2s',
+            overflow: 'hidden',
         },
         main: {
             width: "100vw",
-            height: "90%",
-            overflow: 'auto',
+            height: "100vh",
+            overflowY: 'scroll',
         },
         button: {
-            float: 'right',
             width: "30vw",
             height: "10%",
-            backgroundColor: 'white',
+            backgroundColor: '#fff',
             border: 'none',
             fontSize: "30px",
             color: "rgb(255,101,195)",
             fontWeight: "bold",
-            textShadow: "2px 2px 1px rgba(255,101,195, .5)",
+            margin: '0px 0px 70px',
         }
     }
 
     useEffect(() => {
+        //if(window.current) window.current.addEventListener('touchmove', function(e) {e.preventDefault();}, false);
+        console.log('here');
         if(props.show) show();
 
     }, [props.children])
 
     function show(){
         window.current.style.display = 'block';
+        window.current.style.position = 'fixed';
+        window.current.children[0].scrollTo(0,0);
 
         setTimeout(() => {
             window.current.style.transform = 'scale(1)';
@@ -63,8 +65,10 @@ function InfoWindow(props){
         <div style={styles.container} ref={window}>
             <div style={styles.main}>
                 {props.children}
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <button style={styles.button} onClick={hide}>Fechar</button>
+                </div>
             </div>
-            <button style={styles.button} onClick={hide}>Fechar</button>
         </div>
     )
 }

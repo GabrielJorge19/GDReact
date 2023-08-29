@@ -1,8 +1,36 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsArrowRight } from 'react-icons/bs';
 
+let dados01 = {
+    title: 'Destaques',
+    dataType: 'images',
+    href: '',
+    data: [{
+        title: 'Marinheiro',
+        src: './src/assets/1.jpg',
+        href: '',
+    }, {
+        title: 'Marinheiro',
+        src: './src/assets/1.jpg',
+        href: '',
+    }, {
+        title: 'Marinheiro',
+        src: './src/assets/1.jpg',
+        href: '',
+    }, {
+        title: 'Marinheiro',
+        src: './src/assets/1.jpg',
+        href: '',
+    }, {
+        title: 'Marinheiro',
+        src: './src/assets/1.jpg',
+        href: '',
+    }]
+}
+
+
 function HorizontalList(props){
-    const [data, setData] = useState(props.data);
+    const [data, setData] = useState(props.data || dados01);
     let container = useRef(null);
 
     let styles = {
@@ -10,10 +38,12 @@ function HorizontalList(props){
             backgroundColor: 'white',
             display: "flex",
             flexDirection: "column",
-            width: '95%',
+            width: '100%',
             margin: 'auto',
             marginBottom: 10,
             borderRadius: 10,
+            borderBottom: '1px solid #888',
+
             paddingBottom: 10,
         },
         HorizontalListContainer: {
@@ -42,6 +72,10 @@ function HorizontalList(props){
             alignItems: 'center',
         }
     }
+
+    useEffect(() => {
+        if(container.current) container.current.scrollTo({top: 0,left: 1,behavior: 'smooth',});
+    }, []);
 
     return (
         <>

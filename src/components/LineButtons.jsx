@@ -2,20 +2,19 @@ import {useRef, useState} from 'react';
 import InfoWindow from './InfoWindow';
 import { MdOutlineWatchLater, MdOutlinePayments } from 'react-icons/md';
 import { LuMapPin } from 'react-icons/lu';
-
-
 import { RiCoupon3Line } from 'react-icons/ri';
 import { BsGearFill } from 'react-icons/bs';
-//import {  } from 'react-icons/';
-//import {  } from 'react-icons/';
+import DecorationPage from './DecorationPage';
 
-const comp = (text) => {return <h1>{text}</h1>}
+
+const comp = (text) => {return <h1 style={{height: '200vh'}}>{text}</h1>}
 
 function LineButtons(){
     const [buttonActive, setButtonActive] = useState(0);
 
     const buttons = [
         {icon: <LuMapPin />, text: "Retirada", component: comp("Retirada")},
+        // {icon: <LuMapPin />, text: "Retirada", component: <DecorationPage />},
         {icon: <MdOutlineWatchLater />, text: "Horario", component: comp("Horario")},
         {icon: <BsGearFill />, text: "Montagem", component: comp("Montagem")},
         {icon: <MdOutlinePayments />, text: "Pagamento", component: comp("Pagamento")},

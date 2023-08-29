@@ -1,34 +1,37 @@
-import LineButtons from './components/LineButtons';
 import Header from './components/Header';
-import Banner from './components/Banner';
-import HorizontalList from './components/HorizontalList';
-import Decoration from './components/Decoration';
+import DecorationPage from './components/DecorationPage';
+import { createContext } from 'react';
+
+//useContext
 
 
+
+import Home from './Home';
 
 function App() {
     let style = {
-        //backgroundColor: '#ccc',
-        padding: 0,
-        //height: '100%',
-        //backgroundImage: 'linear-gradient(rgb(56,218,255) 25%, white 45%)',
+        // padding: 20,
         backgroundImage: 'linear-gradient(rgb(56,218,255) 150px, #eee 250px)',
-        //height: '100vh',
+        fontFamily: 'arial',
+        height: '100vh',
+        // overflowY: 'scroll',
     }
 
-    
+    const DataApp = createContext(null);
+
     return (
-        <div style={style}>
-            <Header />
-            <Decoration />
-            {/* <Banner />
-            <LineButtons />
-            <HorizontalList data={dados01} />
-            <HorizontalList data={dados02} />
-            <HorizontalList data={dados02} />
-            <HorizontalList data={dados02} />
-            <HorizontalList data={dados02} /> */}
-        </div>
+        <DataApp.Provider value={{ nome: 'some' }}>
+
+            <div style={style}>
+                <Header />
+                <div style={{overflowY: 'scroll', height: 'calc(100vh - 15vw - 40px)'}}>
+
+                    <DecorationPage />
+                    {/* <Home /> */}
+                </div>
+            </div>
+        </DataApp.Provider>
+
     )
 }
 
@@ -36,60 +39,3 @@ export default App;
 
 
 
-
-
-
-
-let dados01 = {
-    title: 'Destaques',
-    dataType: 'images',
-    href: '',
-    data: [{
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }]
-}
-
-let dados02 = {
-    title: 'Destaques',
-    dataType: 'images',
-    href: '',
-    data: [{
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }, {
-        title: 'Marinheiro',
-        src: './src/assets/1.jpg',
-        href: '',
-    }]
-}

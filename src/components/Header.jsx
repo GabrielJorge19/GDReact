@@ -8,7 +8,7 @@ function Header() {
             width: "94%",
             height: '9vw',
             padding: "3vw",
-            marginBottom: 30,
+            marginBottom: 10,
             display: "flex",
             justifyContent: 'space-between',
         },
