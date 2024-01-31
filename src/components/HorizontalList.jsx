@@ -1,135 +1,186 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { forwardRef, useContext, useRef } from "react";
 import { BsArrowRight } from 'react-icons/bs';
-import { IoCaretBackOutline, IoCaretForwardOutline } from 'react-icons/io5';
+import { SlDislike } from "react-icons/sl";
+import { Keyboard, Navigation, Pagination, Scrollbar } from 'swiper/modules';
 import { DataApp } from './Context';
+import { useNavigate } from "react-router-dom";
 
-function HorizontalList() {
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+
+function HorizontalList({ title, decorations }, ref) {
+    const user = useContext(DataApp);
     let width = window.innerWidth;
-    const data = useContext(DataApp).getRandomCategorie();
-    const [backButtom, setBackButtom] = useState(false);
-    const [nextButtom, setNextButtom] = useState(false);
-    let container = useRef(null);
-    let decorations = useRef(null);
-    const index = useRef(0);
+    const navigate = useNavigate();
+    const colors = useContext(DataApp).colors;
 
     let styles = {
         container: {
             position: "relative",
             display: "flex",
+            gap: 10,
             flexDirection: "column",
             width: '100%',
-            // margin: 'auto',
-            marginBottom: 30,
-            borderRadius: 10,
-            paddingBottom: 10,
-            // boxShadow: '0px 0px 5px #fff',
-            // backgroundColor: '#eee',
-            // border: '1px solid #444',
+            // padding: '0px',
+            // marginBottom: 30,
+            // marginTop: 20,
+
         },
         titleContainer: {
+            paddingLeft: '0%',
             display: 'flex',
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: '10px 10px 5px',
             fontSize: '0.6em',
         },
-        HorizontalListContainer: {
-            display: 'flex',
-            overflowY: "hidden",
-            whiteSpace: "nowrap",
-            paddingLeft: 10,
-            height: '100%',
-            gap: '2%',
-            overflowX: (width < 800) ? 'scroll' : 'hidden',
-        },
-        scrollButtons: {
-            position: 'absolute',
-            height: '40%',
-            borderRadius: '50%',
-            display: (width > 800)?'flex':'none',
-            alignItems: 'center',
-            bottom: '30%',
-            color: 'white',
-            transition: 'opacity .4s',
-            zIndex: 100,
-            // backgroundImage: 'radial-gradient(#000000ff, #00000000)',
-        },
         decoration: {
-            padding: '2%',
-            minWidth: '20vh',
-            maxWidth: '20vh',
+            width: '100%',
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            borderRadius: 10,
-            backgroundColor: '#fff',
+            gap: 10,
+            backgroundColor: colors.decorationSugestionBackground,
+            padding: '5% 3%',
+            borderRadius: '5px',
+            // border: '1px solid #ccc', // + colors.secondaryButton,
+            // boxShadow: '
+            // boxShadow: '0px 4px 2px -2px gray',
+            // boxShadow: '0px 15px 10px -15px #111', 
+
+            // boxShadow: '5px 5px 5px #000',
+
         },
         image: {
             width: "100%",
-            maxWidth: '100%',
-            height: '25vh',
+            height: 200,
             objectFit: 'cover',
             display: 'flex',
             alignItems: 'flex-end',
             color: 'white',
             fontSize: 10,
-            borderRadius: 10,
-
+            borderRadius: 5,
+            aspectRatio: 1,
         },
         decorationTitle: {
-            maxWidth: '100%',
-            padding: '12% 0px 3%',
-            margin: 'auto',
-            fontWeight: "bold",
+            width: '96%',
+            padding: '3% 2%',
             fontSize: '1em',
-        }
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+        },
+
+        buttons: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            padding: '0% 0%',
+            gap: 10,
+
+        },
+        primary: {
+            display: 'flex',
+            width: "50%",
+            flex: 5,
+            padding: '3% 2% 3% 4%',
+            borderRadius: 5,
+            border: 'none',
+            // border: '1px solid ' + colors.secondaryButton,
+            backgroundColor: colors.secondaryButton,
+            // backgroundColor: '#fff',
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: '#fff',
+            // color: colors.secondaryButton,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            transition: 'all .1s',
+            opacity: .5,
+            cursor: 'pointer',
+        },
+        secondary: {
+            padding: '1% 2%',
+            borderRadius: 5,
+            border: '1px solid ' + colors.secondaryButton,
+            backgroundColor: colors.secondaryButton + '00',
+            fontSize: 15,
+            color: colors.secondaryButton,
+            flex: 1,
+            cursor: 'pointer',
+
+        },
     }
 
     if (width > 500) {
-        styles.image = { ...styles.image, height: '50vh' }
-        styles.decoration = { ...styles.decoration, minWidth: '40vh', maxWidth: '40vh', padding: '0.7%', }
+        styles.image = { ...styles.image }
+        styles.decoration = { ...styles.decoration, }
         styles.HorizontalListContainer = { ...styles.HorizontalListContainer, gap: '1%' }
         styles.titleContainer = { ...styles.titleContainer, fontSize: '0.8em' }
         styles.decorationTitle = { ...styles.decorationTitle, fontSize: '1.5em' }
     }
 
-    const handleHoverContainer = (direction) => {
-        let containerWidth = decorations.current.clientWidth;
-        let decoWidth = decorations.current.children[0].getBoundingClientRect().width;
-        let onViewCount = Math.floor(containerWidth / decoWidth);
+    const hoverMainButton = (event) => event.target.style.opacity = (event.type == "mouseenter") ? 1 : .5;
 
-        if(direction === 'back' && index.current > 0) setBackButtom(true);
-        if(direction === 'forward' && index.current < data.decorations.length - onViewCount) setNextButtom(true);
-    }
+    const hoverSecondaryButton = (event) => {
+        // Cor hexadecimal com opacidade é convertida em rgba()
 
-    const handleScroll = (direction) => {
-        let containerWidth = decorations.current.clientWidth;
-        let decoWidth = decorations.current.children[0].getBoundingClientRect().width;
-        let onViewCount = Math.floor(containerWidth / decoWidth);
+        let backgroundColor = event.target.style.backgroundColor;
+        let color = event.target.style.color;
+        let bc = (opacity) => backgroundColor.substring(0, backgroundColor.lastIndexOf(',') + 1) + ' ' + opacity + ')';
 
-        if(direction == 'back') {
-            if(index.current == 0) return;
-            index.current -= 1;
+        
+        if (event.type == "mouseenter") {
+            
+            backgroundColor = bc(.99);
+            color = 'white';
+        } else {
+            
+            color = colors.secondaryButton;
+            backgroundColor = bc(0)
         }
-        else if(direction == 'forward') {
-            if(index.current >= data.decorations.length - onViewCount) return;
-            index.current += 1;
-        }   
 
-        let childLeft = decorations.current.children[index.current].getBoundingClientRect().left;
-        decorations.current.scrollBy({ left: childLeft - width*0.02,  behavior: 'smooth' });
+
+        // console.log(backgroundColor);
     }
 
-    useEffect(() => {
-        if (container.current) container.current.scrollTo({ top: 0, left: 3, behavior: 'smooth', });
-    }, []);
+    const hoverDecoration = (event) => {
+        let style = event.target.style;
+
+        if (event.type == "mouseenter") {
+
+            style.backgroundColor = '#ccc';
+        } else {
+
+            style.backgroundColor = colors.decorationSugestionBackground;
+
+        }
+
+    }
+
+
+
+
+
+
+
+
+
 
     return (
-        <div style={styles.container} ref={container}>
+        <div style={styles.container} ref={ref}>
             <div style={styles.titleContainer}>
-                <h1 style={{}}>{data.title}</h1>
-                <div style={{
+                <h1 style={{}}>{title}</h1>
+                {/* <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     fontSize: '1.3em',
@@ -139,24 +190,49 @@ function HorizontalList() {
                     onClick={() => { alert('more') }}>
                     <p style={{ marginRight: 10 }}>Ver mais</p>
                     <BsArrowRight size={15} />
-                </div>
+                </div> */}
             </div>
-            <div style={styles.HorizontalListContainer} ref={decorations}>
-                {data.decorations.map((item, index) => {
-                    return <div style={styles.decoration} key={index} onClick={() => {console.log('Open ' + item.title)}}>
-                        <img src={item.img} style={styles.image} />
-                        <p style={styles.decorationTitle}>{item.title}</p>
-                    </div>
+            <Swiper
+                slidesPerView={'auto'}
+                centeredSlides={false}
+                slidesPerGroupSkip={3}
+                grabCursor={true}
+                loop={true}
+                modules={[Keyboard, Scrollbar]}
+                className="mySwiper"
+                spaceBetween={20}
+                style={{ height: 'auto', width: '100%', '--swiper-navigation-color': '#fff', '--swiper-pagination-color': '#fff', paddingBottom: '0%' }}
+            >
+                {decorations.map((item, index) => {
+                    let decorationTitle = item.title.charAt(0).toUpperCase() + item.title.slice(1);
+                    return <SwiperSlide key={index} style={{ backgroundColor: '##497179', width: '200px' }}>
+                        <div style={styles.decoration}
+                            // onMouseEnter={hoverDecoration}
+                            // onMouseLeave={hoverDecoration}
+
+                        >
+                            <img src={user.serverUrl + item.images[0].src} style={styles.image} />
+                            {/* <p style={styles.decorationTitle}>{decorationTitle}</p> */}
+                            <div style={styles.buttons}>
+                                <button style={styles.primary}
+                                    onClick={() => { navigate('/decoration/' + item.id) }}
+                                    onMouseEnter={hoverMainButton}
+                                    onMouseLeave={hoverMainButton}
+                                >{decorationTitle}</button>
+                                <button style={styles.secondary}
+                                    onClick={() => console.log('Dislike')}
+                                    onMouseEnter={hoverSecondaryButton}
+                                    onMouseLeave={hoverSecondaryButton}
+                                ><SlDislike /></button>
+                            </div>
+                        </div>
+                    </SwiperSlide>
                 })}
-            </div>
-            <div style={{...styles.scrollButtons, opacity: (backButtom) ? 1 : 0}} onMouseEnter={() => handleHoverContainer('back')} onMouseLeave={() => { setBackButtom(false)}}>
-                <IoCaretBackOutline size={150} onClick={() => handleScroll('back')} />
-            </div>
-            <div style={{...styles.scrollButtons, right: 0, opacity: (nextButtom) ? 1 : 0}} onMouseEnter={() => handleHoverContainer('forward')} onMouseLeave={() => { setNextButtom(false)}}>
-                <IoCaretForwardOutline size={150} onClick={() => handleScroll('forward')} />
-            </div>
+
+
+            </Swiper>
         </div>
     );
 }
 
-export default HorizontalList;
+export default forwardRef(HorizontalList);

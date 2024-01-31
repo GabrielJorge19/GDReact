@@ -4,12 +4,13 @@ import { LuMapPin } from 'react-icons/lu';
 import { RiCoupon3Line } from 'react-icons/ri';
 import { BsGearFill } from 'react-icons/bs';
 import DecorationPage from './DecorationPage';
-
+import { DataApp } from './Context';
 import { InfoWindowCtx } from './Context';
 
 
 function LineButtons() {
     const InfoWindow = useContext(InfoWindowCtx);
+    const colors = useContext(DataApp).colors;
 
     const buttons = [
         { icon: <RiCoupon3Line />, text: "Pegue e monte", cod: "pegueEMonte"},
@@ -21,35 +22,37 @@ function LineButtons() {
     let styles = {
         buttonContainer: {
             display: "flex",
-            justifyContent: "space-evenly",
-            width: '95%',
-            margin: 'auto',
-            marginBottom: 20,
-            padding: '10px 0px',
+            gap: 15,
+            width: '100%',
+            padding: '0px 0px',
             borderRadius: '10px',
         },
         button: {
-            width: "25%",
+            width: 50,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'center',
+            gap: 5,
+            cursor: 'pointer',
         },
         icon: {
-            width: "12vw",
-            height: '12vw',
-            borderRadius: '15vw',
-            boxShadow: '10px 5px 8px #ccc',
+            backgroundColor: '#fff',
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            boxShadow: '4px 4px 5px #000',
+            // boxShadow: '5px 5px 3px ' + colors[2],
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             fontSize: 20,
-            backgroundColor: 'white',
+            // color: colors[2],
+            border: '1px solid black',
+            // border: '1px solid ' + colors[2],
         },
         text: {
             textAlign: "center",
-            fontSize: 10,
-            marginTop: 10,
+            fontSize: 13,
         }
     }
 

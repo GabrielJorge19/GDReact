@@ -7,7 +7,6 @@ export function Carousel({ images, onChange, countIndicator = true }) {
     const appData = useContext(DataApp);
     const width = window.innerWidth;
     const initialX = useRef(0);
-    const [touchX, setTouchX] = useState(-1);
     const [nextImageDisplay, setNextImageDisplay] = useState(false);
 
     let styles = {
@@ -18,6 +17,7 @@ export function Carousel({ images, onChange, countIndicator = true }) {
             position: 'relative',
             display: 'flex',
             justifyContent: 'center',
+            flexDirection: 'column',
         },
         back: {
             width: '100%',
@@ -34,7 +34,7 @@ export function Carousel({ images, onChange, countIndicator = true }) {
             position: 'absolute',
             top: 0,
             width: '100%',
-            height: '100%',
+            height: '500px',
             display: (appData.isMobile) ? 'none' : 'flex',
             justifyContent: 'space-between',
             transition: 'all 1s linear 1s',
@@ -42,7 +42,6 @@ export function Carousel({ images, onChange, countIndicator = true }) {
         button: {
             height: '100%',
             width: '10%',
-            // display: (nextImageDisplay)?'flex':'none',
             display: 'flex',
             opacity: (nextImageDisplay) ? 1 : 0,
             alignItems: 'center',
@@ -73,7 +72,7 @@ export function Carousel({ images, onChange, countIndicator = true }) {
         },
         image: {
             maxWidth: '100%',
-            maxHeight: '500px',
+            height: '500px',
             objectFit: 'fill',
         }
     };
@@ -101,20 +100,25 @@ export function Carousel({ images, onChange, countIndicator = true }) {
         if (onChange != undefined) onChange(index.current);
     };
 
+    const pressOut = (event) => {
+        if (event.touches.length == 0) {
+            let distance = Math.floor(event.changedTouches[0].clientX) - initialX.current;
+            if (distance < -(width * .1)) scroll(true);
+            if (distance > width * .1) scroll(false);
+        }
+    }
 
+    const pressIn = (event) => {
+        if (event.touches.length == 1) initialX.current = Math.floor(event.touches[0].clientX);
+    }
 
     return (
         <div style={styles.container}
-            onTouchStart={(event) => {
-                if (event.touches.length == 1) initialX.current = Math.floor(event.touches[0].clientX);
-            }}
-            onTouchEnd={(event) => {
-                if (event.touches.length == 0) {
-                    let distance = Math.floor(event.changedTouches[0].clientX) - initialX.current;
-                    if (distance < -(width * .1)) scroll(true);
-                    if (distance > width * .1) scroll(false);
-                }
-            }}>
+            onTouchStart={pressIn}
+            onTouchEnd={pressOut}
+            // onPressIn={() => console.log('click')}
+            >
+
             <div style={styles.back} ref={imagesContainer}>
                 {images.map((element, index) => {
                     return <div key={index} style={styles.listItem}>

@@ -1,42 +1,13 @@
-import { useRef, useEffect, useContext } from 'react';
-import LineButtons from './components/LineButtons';
-import Banner from './components/Banner';
-import HorizontalList from './components/HorizontalList';
-import Decoration from './components/Decoration';
-import Header from './components/Header';
-import { DataApp } from './components/Context';
+import { useEffect, useRef } from 'react';
 import { Feed } from './components/Feed';
+import Header from './components/Header';
 
 
 function Home() {
-    const width = window.innerWidth;
-    const decoration = useContext(DataApp);
-    const bannerImages = decoration.getBannerImages();
-    const randomDecoration = decoration.getRandomDecoration();
 
-    let padding = 8 - (width / 200)
-    let styles = {
-        padding: {
-            padding: `0px ${padding/2}% 0px ${padding/2}%`,
-            width: `${100 - padding}%`,
-        }
-    }
-
-    return (<div style={{}}>
-        <Header />
+    return (<div >
+        {/* <Header /> */}
         <Feed />
-        {/* <Decoration data={randomDecoration}/> */}
-        {/* <div style={{ overflowY: 'scroll', height: 'calc(100vh - 15vh)'}}>
-            <Banner images={bannerImages} />
-            <div style={styles.padding}>
-                {(width < 500)?<><LineButtons /><Decoration data={randomDecoration}/></>:''}
-                
-                <HorizontalList />
-                <HorizontalList />
-                <HorizontalList />
-            </div>
-        </div> */}
-
     </div>)
 }
 

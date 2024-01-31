@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { DataApp } from './Context';
 import { Post } from './Post.jsx';
+import Header from './Header';
 
 export function Feed() {
-    let serverUrl = window.location.href.slice(0, window.location.href.lastIndexOf(':') + 1) + '3000/';
+    const user = useContext(DataApp);
     let width = window.innerWidth;
     let height = window.innerHeight;
     const [pov, setPov] = useState(0);
     const [posts, setPosts] = useState([]);
     const postOnView = useRef(0);
-    const [gettingPosts, setGettingPosts] = useState(false);
     const feed = useRef(null);
-    const userId = useRef(null);
+    const colors = useContext(DataApp).colors;
 
     let styles = {
         container: {
@@ -18,65 +19,15 @@ export function Feed() {
             flexDirection: 'column',
             alignItens: 'center',
             gap: '2vh',
-            width: '96%',
-            maxWidth: '500px',
-            backgroundColor: '#ddd',
+            // width: '96%',
+            width: (width < 500) ? '100%' : '96%',
             margin: 'auto',
-            padding: '2%',
-            marginTop: (width > 500) ? '8vh' : '6vh',
+            maxWidth: '500px',
+            backgroundColor: colors.feedBackground,
+            // padding: '2%',
+            padding: (width < 500) ? '10px 0px' : '2%',
+            paddingTop: (width > 500) ? '15vh' : '10vh',
         }
-    }
-
-    const getUserReport = () => {
-        let postsReport = [];
-
-        posts.map(post => {
-            let timeOnView = post.report.timeOnView;
-
-            if (timeOnView > 1) {
-                postsReport.push({ id: post.id, ...post.report })
-                resetReport(post);
-            }
-        });
-
-        return postsReport;
-    }
-
-    const resetReport = (post) => {
-        post.report.timeOnView = 0;
-        post.report.imagesChanges = 0;
-    }
-
-    const getPosts = async () => {
-
-
-        fetch(serverUrl + 'posts', { headers: { 'Access-Control-Allow-Origin': '*' } })
-            .then(response => response.json())
-            .then(response => {
-                // console.log("response ", ...response.posts)
-                setPosts(response.posts);
-                // setGettingPosts(false);
-                userId.current = response.userId
-            })
-            .catch(err => console.log(err))
-    }
-
-    const getMorePosts = async () => {
-        if (gettingPosts) return;
-        let userReport = getUserReport();
-        setGettingPosts(true);
-
-        fetch(serverUrl + 'posts', {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: userId.current, userReport })
-        })
-            .then(response => response.json())
-            .then(response => {
-                setPosts([...posts, ...response.posts]);
-                setGettingPosts(false);
-            })
-            .catch(err => console.log(err))
     }
 
     const updatePov = (value) => {
@@ -84,32 +35,51 @@ export function Feed() {
         postOnView.current += value;
     }
 
+    const visibilitychange = () => {
+        if (document.hidden) setPov(-1);
+        else setPov(postOnView.current);
+    }
+
+    const scroolEvent = () => {
+        let post = feed.current.children[postOnView.current].getBoundingClientRect();
+        let margin = parseInt(styles.container.paddingTop);
+        let half = ((margin + 50 - margin / 2) / 100) * height;
+        let gap = parseInt(styles.container.gap) * height / 200;
+
+        if (post.top - gap > half) updatePov(-1);
+        if ((post.top + post.height + gap) < half) updatePov(1);
+    }
+
+    const updatePosts = () => {
+        setPosts(user.posts);
+    }
+
     useEffect(() => {
-        getPosts();
-        window.addEventListener('scroll', () => {
-            let post = feed.current.children[postOnView.current].getBoundingClientRect();
-            let margin = parseInt(styles.container.marginTop);
-            let half = ((margin + 50 - margin / 2) / 100) * height;
-            let gap = parseInt(styles.container.gap) * height / 200;
+        window.addEventListener('scroll', scroolEvent);
+        window.addEventListener('visibilitychange', visibilitychange, false);
+        user.addEventListener('postsUpdated', updatePosts);
+        user.getPosts();
 
-            if (post.top - gap > half) updatePov(-1);
-            if ((post.top + post.height + gap) < half) updatePov(1);
-        })
-
-
-        document.addEventListener('visibilitychange', function () {
-            let time = new Date().getSeconds();
-            if (document.hidden) setPov(-1); 
-            else setPov(postOnView.current);              
-        }, false);
+        return () => {
+            window.removeEventListener('scroll', scroolEvent);
+            window.removeEventListener('visibilitychange', visibilitychange);
+            user.removeEventListener('postsUpdated', updatePosts);
+        }
     }, [])
 
-    useEffect(() => { if (posts.length - pov - 1 <= 3 && posts.length > 3) getMorePosts() }, [pov])
+    useEffect(() => {
+        if (user.posts.length - pov - 1 <= 3 && user.posts.length > 3) user.getPosts();
+    }, [pov])
 
-    return <div style={styles.container} ref={feed}>
-        {posts.map((post, index) => {
-            let onView = index == pov;
-            return <Post data={post} key={post.id} onView={onView} />
-        })}
+    return <div style={{
+        backgroundColor: colors.feedPostsBackground
+    }}>
+        <Header />
+        <div style={styles.container} ref={feed}>
+            {user.posts.map((post, index) => {
+                let onView = index == pov;
+                return <Post data={post} key={post.id} onView={onView} />
+            })}
+        </div>
     </div>
 }

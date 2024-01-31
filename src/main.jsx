@@ -10,5 +10,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <DataAppContext>
       <App />
     </DataAppContext>
-  // </React.StrictMode>
+  // </React.StrictMode> 
 )
