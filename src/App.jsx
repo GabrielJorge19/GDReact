@@ -1,5 +1,6 @@
 import DecorationPage from './components/DecorationPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from 'react';
 
 import Home from './Home';
 import DevPage from './DevPage';
@@ -16,6 +17,10 @@ function App() {
         width: '100%',
 
     }
+
+    useEffect(() => {
+        document.title = 'Projeto GD';
+    }, []);
 
     return (<div style={style}>
         <BrowserRouter>

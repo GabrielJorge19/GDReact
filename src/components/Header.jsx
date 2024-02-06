@@ -38,14 +38,15 @@ export default function Header() {
         content: {
             maxWidth: '800px',
             width: "94%",
-            height: '5vh',
-            padding: ".5vh 3%",
+            height: '3vh',
+            padding: "5vh 3% 2vh",
             display: "flex",
             justifyContent: 'space-between',
             gap: '3%',
         },
         logo: {
             height: "100%",
+            maxWidth: '50px',
             borderRadius: '10px',
             backgroundColor: 'white',
             objectFit: 'contain',
